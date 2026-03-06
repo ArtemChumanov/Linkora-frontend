@@ -1,0 +1,132 @@
+import axios, { AxiosError } from "axios";
+import { refreshToken } from "../api/user";
+
+const getToken = () => {
+  if (typeof window === "undefined") return null;
+  return localStorage.getItem("accessToken");
+};
+
+const setToken = (token: string) => {
+  localStorage.setItem("accessToken", token);
+};
+
+const removeToken = () => {
+  localStorage.removeItem("accessToken");
+};
+
+// базова конфігурація для всіх запитів
+export const BASE_URL = "http://167.71.4.129/api";
+
+/* ================================
+   MAIN API INSTANCE
+================================ */
+export const API = axios.create({
+  baseURL: BASE_URL,
+  timeout: 10000,
+  headers: {
+    "Content-Type": "application/json",
+  },
+});
+
+/* ================================
+   REFRESH INSTANCE (NO INTERCEPTORS)
+================================ */
+export const RefreshAPI = axios.create({
+  baseURL: BASE_URL,
+  withCredentials: true,
+});
+
+// request interceptor — наприклад, додаємо токен
+API.interceptors.request.use(
+  (config) => {
+    const token = getToken(); // або через zustand/auth store
+    if (token) {
+      config.headers["Authorization"] = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => Promise.reject(error),
+);
+let isRefreshing = false;
+
+let failedQueue: {
+  resolve: (token: string) => void;
+  reject: (err: any) => void;
+}[] = [];
+
+const processQueue = (error: any, token: string | null = null) => {
+  failedQueue.forEach((prom) => {
+    if (error) {
+      prom.reject(error);
+    } else {
+      prom.resolve(token!);
+    }
+  });
+
+  failedQueue = [];
+};
+
+/* ================================
+   RESPONSE INTERCEPTOR
+================================ */
+API.interceptors.response.use(
+  (response) => response,
+
+  async (error: AxiosError) => {
+    const originalRequest: any = error.config;
+
+    // Якщо не 401 — просто помилка
+    if (error.response?.status !== 401) {
+      return Promise.reject(error);
+    }
+
+    // Захист від циклу
+    if (originalRequest._retry) {
+      removeToken();
+      return Promise.reject(error);
+    }
+
+    // Якщо вже робиться refresh — чекаємо
+    if (isRefreshing) {
+      return new Promise((resolve, reject) => {
+        failedQueue.push({
+          resolve: (token: string) => {
+            originalRequest.headers.Authorization = "Bearer " + token;
+
+            resolve(API(originalRequest));
+          },
+          reject,
+        });
+      });
+    }
+
+    originalRequest._retry = true;
+    isRefreshing = true;
+
+    try {
+      const data = await refreshToken();
+
+      const newToken = data.accessToken;
+
+      if (!newToken) throw new Error("No token");
+
+      setToken(newToken);
+
+      API.defaults.headers.common.Authorization = "Bearer " + newToken;
+
+      processQueue(null, newToken);
+
+      return API(originalRequest);
+    } catch (err) {
+      processQueue(err, null);
+
+      removeToken();
+
+      return Promise.reject(err);
+    } finally {
+      isRefreshing = false;
+    }
+  },
+);
+
+export default API;
