@@ -24,29 +24,38 @@ const Analytics = () => {
     queryFn: () => getStatistic(selectedCode as string),
     enabled: !!selectedCode,
   });
+
   return (
     <>
       <Header
-        links={links}
+        links={links || []}
         selectedCode={selectedCode}
         setSelectedCode={setSelectedCode}
       />
       <div className="grid mt-6">
         <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
           <div className="xl:col-span-1">
-            <Devices devices={analyticData?.devices} />
+            {analyticData?.devices && (
+              <Devices devices={analyticData?.devices} />
+            )}
           </div>
 
           <div className="xl:col-span-2">
-            <Countries countries={analyticData?.countries} />
+            {analyticData?.countries && (
+              <Countries countries={analyticData?.countries} />
+            )}
           </div>
 
           <div className="xl:col-span-2">
-            <ClicksData clickDataPerDay={analyticData?.clickDataPerDay} />
+            {analyticData?.clickDataPerDay && (
+              <ClicksData clickDataPerDay={analyticData?.clickDataPerDay} />
+            )}
           </div>
 
           <div className="xl:col-span-1">
-            <Browsers browsers={analyticData?.browsers} />
+            {analyticData?.browsers && (
+              <Browsers browsers={analyticData?.browsers} />
+            )}
           </div>
         </div>
       </div>

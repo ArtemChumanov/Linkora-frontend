@@ -1,9 +1,5 @@
 import API from "@/lib/axiosConfig";
-import {
-  IUserLink,
-  UserLinkSchema,
-  UserLinksSchema,
-} from "@/schemas/link.schemas";
+import { IUserLink, UserLinksSchema } from "@/schemas/link.schemas";
 
 export const getLinksByProjects = async (projectId: string) => {
   try {

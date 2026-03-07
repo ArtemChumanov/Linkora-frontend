@@ -9,16 +9,11 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useAuth } from "@/hooks/useAuth";
-import {
-  BadgeCheckIcon,
-  BellIcon,
-  CreditCardIcon,
-  LogOutIcon,
-} from "lucide-react";
+import { BadgeCheckIcon, LogOutIcon } from "lucide-react";
 import Link from "next/link";
 
 const UserInfo = () => {
-  const { isAuth, logout } = useAuth();
+  const { logout } = useAuth();
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>

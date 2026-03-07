@@ -7,8 +7,12 @@ import {
 } from "react";
 import { ModalContext } from "@/providers/ModalProvider";
 
-export const useModal = (
-  modal: ReactElement,
+type ModalProps = {
+  isOpen?: boolean;
+  onClose?: () => void;
+};
+export const useModal = <T extends ModalProps>(
+  modal: ReactElement<T>,
   modalId = "default",
 ): [() => void, () => void] => {
   const { onPresent, onDismiss } = useContext(ModalContext);
@@ -19,7 +23,9 @@ export const useModal = (
       return;
     }
 
+    // Тут ми кастимо пропси до правильного типу
     const node = cloneElement(modal, {
+      ...(modal.props as T),
       isOpen: true,
       onClose: onDismiss,
     });

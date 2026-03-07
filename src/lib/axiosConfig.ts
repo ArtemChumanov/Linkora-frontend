@@ -1,6 +1,8 @@
-import axios, { AxiosError } from "axios";
+import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
 import { refreshToken } from "../api/user";
-
+interface AxiosRequestConfigWithRetry extends AxiosRequestConfig {
+  _retry?: boolean;
+}
 const getToken = () => {
   if (typeof window === "undefined") return null;
   return localStorage.getItem("accessToken");
@@ -15,7 +17,7 @@ const removeToken = () => {
 };
 
 // базова конфігурація для всіх запитів
-export const BASE_URL = "http://167.71.4.129/api";
+export const BASE_URL = "http://167.71.11.150/api";
 
 /* ================================
    MAIN API INSTANCE
@@ -51,15 +53,19 @@ let isRefreshing = false;
 
 let failedQueue: {
   resolve: (token: string) => void;
-  reject: (err: any) => void;
+
+  reject: (err: AxiosError) => void;
 }[] = [];
 
-const processQueue = (error: any, token: string | null = null) => {
+const processQueue = (
+  error: AxiosError | null,
+  token: string | null = null,
+) => {
   failedQueue.forEach((prom) => {
     if (error) {
       prom.reject(error);
-    } else {
-      prom.resolve(token!);
+    } else if (token) {
+      prom.resolve(token);
     }
   });
 
@@ -70,10 +76,10 @@ const processQueue = (error: any, token: string | null = null) => {
    RESPONSE INTERCEPTOR
 ================================ */
 API.interceptors.response.use(
-  (response) => response,
+  (response: AxiosResponse) => response, // правильний тип для response
 
-  async (error: AxiosError) => {
-    const originalRequest: any = error.config;
+  async (error: AxiosError): Promise<AxiosResponse | Promise<never>> => {
+    const originalRequest = error.config as AxiosRequestConfigWithRetry;
 
     // Якщо не 401 — просто помилка
     if (error.response?.status !== 401) {
@@ -91,6 +97,7 @@ API.interceptors.response.use(
       return new Promise((resolve, reject) => {
         failedQueue.push({
           resolve: (token: string) => {
+            if (!originalRequest.headers) originalRequest.headers = {};
             originalRequest.headers.Authorization = "Bearer " + token;
 
             resolve(API(originalRequest));
@@ -105,28 +112,22 @@ API.interceptors.response.use(
 
     try {
       const data = await refreshToken();
-
       const newToken = data.accessToken;
 
       if (!newToken) throw new Error("No token");
 
       setToken(newToken);
-
       API.defaults.headers.common.Authorization = "Bearer " + newToken;
-
       processQueue(null, newToken);
 
       return API(originalRequest);
     } catch (err) {
-      processQueue(err, null);
-
+      processQueue(err as AxiosError, null);
       removeToken();
-
       return Promise.reject(err);
     } finally {
       isRefreshing = false;
     }
   },
 );
-
 export default API;

@@ -44,7 +44,7 @@ const renderCustomizedLabel = ({
 interface Props {
   data: {
     name: string;
-    value: string;
+    value: number;
   }[];
 }
 const PieChart: FC<Props> = ({ data }) => {

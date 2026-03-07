@@ -1,27 +1,19 @@
 "use client";
 import { ReactNode } from "react";
 import Link from "next/link";
-import { useState } from "react";
 import {
   Sidebar,
-  SidebarContent,
-  SidebarFooter,
   SidebarGroup,
-  SidebarHeader,
   SidebarProvider,
-  // SidebarItem,
   SidebarTrigger,
 } from "@/components/ui/sidebar"; // твій shadcn sidebar
-import { Home, BarChart2, Settings, SquareTerminal, Bot } from "lucide-react";
+import { SquareTerminal, Bot } from "lucide-react";
 
 import {
   SidebarGroupLabel,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-  SidebarMenuSub,
-  SidebarMenuSubButton,
-  SidebarMenuSubItem,
 } from "@/components/ui/sidebar";
 interface DashboardLayoutProps {
   children: ReactNode;

@@ -11,7 +11,7 @@ import {
 interface Props {
   data: {
     name: string;
-    value: string;
+    value: number;
   }[];
 }
 

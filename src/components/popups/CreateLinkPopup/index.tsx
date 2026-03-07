@@ -10,7 +10,7 @@ import { Input } from "@/components/ui/input";
 import { LinkSchema } from "@/schemas/link.schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import React, { FC } from "react";
+import { FC } from "react";
 import { useForm } from "react-hook-form";
 
 interface CreateLinkPopupProps {
@@ -18,6 +18,10 @@ interface CreateLinkPopupProps {
   onClose?: () => void;
   projectId: string;
 }
+type CreateLinkForm = {
+  url: string;
+};
+
 const CreateLinkPopup: FC<CreateLinkPopupProps> = ({
   isOpen,
   onClose,
@@ -27,9 +31,10 @@ const CreateLinkPopup: FC<CreateLinkPopupProps> = ({
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-  } = useForm({
+  } = useForm<CreateLinkForm>({
     resolver: zodResolver(LinkSchema),
   });
+
   const queryClient = useQueryClient();
   const { mutate: createNewLink } = useMutation({
     mutationFn: createLink,
@@ -38,13 +43,13 @@ const CreateLinkPopup: FC<CreateLinkPopupProps> = ({
         queryKey: ["links", projectId],
         exact: true,
       });
-      onClose && onClose();
+      onClose?.();
     },
   });
 
-  const onSubmit = (data) => {
+  const onSubmit = (data: CreateLinkForm) => {
     createNewLink({ ...data, projectId });
-    onClose && onClose();
+    onClose?.();
   };
 
   return (

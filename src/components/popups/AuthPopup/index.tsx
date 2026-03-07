@@ -1,22 +1,16 @@
 "use client";
-import React, { FC, useState } from "react";
-
+import { FC } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { LoginForm, LoginSchema } from "@/schemas/user.schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { useMutation } from "@tanstack/react-query";
-import { login } from "@/api/user";
 import { useAuth } from "@/hooks/useAuth";
 
 interface AuthPopupProps {
@@ -40,7 +34,7 @@ const AuthPopup: FC<AuthPopupProps> = ({ isOpen, onClose }) => {
 
   const onSubmit = async (data: LoginForm) => {
     onLogin(data);
-    onClose && onClose();
+    onClose?.();
   };
 
   return (

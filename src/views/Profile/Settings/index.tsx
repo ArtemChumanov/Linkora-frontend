@@ -2,11 +2,9 @@
 import { getUserInfo, updateUserInfo } from "@/api/user";
 import InputField from "@/components/common/InputField";
 import { Button } from "@/components/ui/button";
-import { UserSchema } from "@/schemas/user.schemas";
 import { useBoundStore } from "@/store";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
 
 export interface IUserSettingsForm {
@@ -19,7 +17,7 @@ export interface IUserSettingsForm {
 const Settings = () => {
   const { userId } = useBoundStore((store) => store);
   const queryClient = useQueryClient();
-  
+
   const { control, reset, handleSubmit } = useForm<IUserSettingsForm>({
     defaultValues: {
       userName: "",
@@ -57,7 +55,7 @@ const Settings = () => {
   }, [userInfo, reset]);
 
   const onUpdate = (data: IUserSettingsForm) => {
-    onUpdateUser({ body: data, userId });
+    onUpdateUser({ body: data, userId: userId as string });
   };
 
   return (

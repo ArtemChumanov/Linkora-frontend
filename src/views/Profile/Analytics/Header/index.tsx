@@ -1,25 +1,26 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import { FC, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useQueryClient } from "@tanstack/react-query";
 
-const Header = ({ links, selectedCode, setSelectedCode }) => {
-  console.log(links);
-
+interface HeaderProps {
+  links: { code: string }[];
+  selectedCode: string;
+  setSelectedCode: (code: string) => void;
+}
+const Header: FC<HeaderProps> = ({ links, selectedCode, setSelectedCode }) => {
+  console.log("links", links);
   useEffect(() => {
-    if (links.length) {
+    if (links?.length) {
       setSelectedCode(links[0].code);
     }
-  }, [links]);
+  }, [links, setSelectedCode]);
 
   const onSelectLink = (code: string) => {
     setSelectedCode(code);
@@ -44,7 +45,7 @@ const Header = ({ links, selectedCode, setSelectedCode }) => {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-40">
-              <DropdownMenuLabel>All link's code</DropdownMenuLabel>
+              <DropdownMenuLabel>All link&apos;s code</DropdownMenuLabel>
               {links?.map(({ code }) => (
                 <DropdownMenuItem key={code} onClick={() => onSelectLink(code)}>
                   {code}

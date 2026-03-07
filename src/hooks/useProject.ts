@@ -15,8 +15,9 @@ export const useLinks = (projectId?: string) => {
   const createLinkMutation = useMutation({
     mutationFn: createLink,
     onSuccess: () => {
-      // після успішного створення лінку — рефетчимо список
-      queryClient.invalidateQueries(["links", projectId]);
+      queryClient.invalidateQueries({
+        queryKey: ["links", projectId],
+      });
     },
   });
 

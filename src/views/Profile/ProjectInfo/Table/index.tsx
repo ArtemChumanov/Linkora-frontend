@@ -3,20 +3,29 @@ import { Button } from "@/components/ui/button";
 import {
   Table,
   TableBody,
-  TableCaption,
   TableCell,
-  TableFooter,
   TableHead,
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
 import { BASE_URL } from "@/lib/axiosConfig";
+import { IEvent } from "@/types/user";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Database } from "lucide-react";
+import { FC } from "react";
 
 const linkCreator = (code: string) => BASE_URL + "/link/info/" + code;
 
-const TableDemo = ({ links, projectId }) => {
+interface TableDemoProps {
+  links: {
+    id: string;
+    code: string;
+    events: IEvent[];
+  }[];
+  projectId: string;
+}
+const TableDemo: FC<TableDemoProps> = ({ links, projectId }) => {
+  console.log(links);
   const queryClient = useQueryClient();
   const { mutate: onRemoveLink } = useMutation({
     mutationFn: removeLink,

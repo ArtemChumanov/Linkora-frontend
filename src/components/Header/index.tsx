@@ -1,11 +1,10 @@
 "use client";
 import Link from "next/link";
-import React, { useEffect } from "react";
 import { Button } from "../ui/button";
 import AuthPopup from "../popups/AuthPopup";
 import { useModal } from "@/hooks/useModal";
 import { useAuth } from "@/hooks/useAuth";
-import { useBoundStore } from "@/store";
+
 import UserInfo from "./UserInfo";
 const Header = () => {
   const [openAuth] = useModal(<AuthPopup />);

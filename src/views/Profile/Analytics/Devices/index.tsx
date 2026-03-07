@@ -1,9 +1,15 @@
 import PieChart from "@/components/charts/PieChart";
 import CardWrapper from "../common/CardWrapper";
+import { FC } from "react";
 // import { RechartsDevtools } from "@recharts/devtools";
 
-const Devices = ({ devices }) => {
-  console.log(devices);
+type Props = {
+  devices: {
+    name: string;
+    value: number;
+  }[];
+};
+const Devices: FC<Props> = ({ devices }) => {
   return (
     <CardWrapper title="Devices">
       <PieChart data={devices} />

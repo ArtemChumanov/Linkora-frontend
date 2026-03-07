@@ -7,12 +7,15 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { LinkSchema } from "@/schemas/link.schemas";
 import { CreateProjectSchema } from "@/schemas/project.schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import React, { FC } from "react";
+import { FC } from "react";
 import { useForm } from "react-hook-form";
+
+type CreateProjectForm = {
+  name: string;
+};
 
 interface Props {
   isOpen?: boolean;
@@ -24,7 +27,7 @@ const CreateProjectPopup: FC<Props> = ({ isOpen, onClose }) => {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-  } = useForm({
+  } = useForm<CreateProjectForm>({
     resolver: zodResolver(CreateProjectSchema),
   });
 
@@ -36,13 +39,13 @@ const CreateProjectPopup: FC<Props> = ({ isOpen, onClose }) => {
         queryKey: ["projects"],
         exact: true,
       });
-      onClose && onClose();
+      onClose?.();
     },
   });
 
-  const onSubmit = (data) => {
+  const onSubmit = (data: CreateProjectForm) => {
     createNewLink(data);
-    onClose && onClose();
+    onClose?.();
   };
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>

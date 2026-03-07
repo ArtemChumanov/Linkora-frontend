@@ -1,16 +1,16 @@
 "use client";
 import SearchInput from "@/components/common/SearchInput";
 import { Button } from "@/components/ui/button";
-import { Table } from "@/components/ui/table";
-import React, { useMemo } from "react";
-import TableDemo, { eventCounter } from "./Table";
+import { useMemo } from "react";
+import TableDemo from "./Table";
 import { getProjectById } from "@/api/projects";
 import { useParams } from "next/navigation";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { createLink, getLinksByProjects } from "@/api/links";
+import { useQuery } from "@tanstack/react-query";
+import { getLinksByProjects } from "@/api/links";
 import { useModal } from "@/hooks/useModal";
 import CreateLinkPopup from "@/components/popups/CreateLinkPopup";
-import { BreadcrumbsBlock } from "@/components/common/BreadcrumbBlock";
+import BreadcrumbsBlock from "@/components/common/BreadcrumbBlock";
+import { ILink } from "@/types/user";
 
 const getLinChain = (lastPage: string) => [
   {
@@ -20,7 +20,7 @@ const getLinChain = (lastPage: string) => [
   { name: lastPage, link: null },
 ];
 
-const calcTolatEvents = (links) =>
+const calcTolatEvents = (links: ILink[]) =>
   links?.reduce((acc, link) => acc + link.events.length, 0);
 
 const ProjectInfo = () => {
@@ -37,7 +37,7 @@ const ProjectInfo = () => {
     enabled: !!projectId,
   });
 
-  const totalClicks = useMemo(() => calcTolatEvents(links, "Click"), [links]);
+  const totalClicks = useMemo(() => calcTolatEvents(links), [links]);
 
   console.log(links);
   const [present] = useModal(
@@ -73,7 +73,7 @@ const ProjectInfo = () => {
         <div className="w-full">
           <SearchInput />
 
-          <TableDemo links={links} projectId={projectId} />
+          <TableDemo links={links} projectId={projectId as string} />
         </div>
         {/* <div className="w-1/2 border">link</div> */}
       </div>

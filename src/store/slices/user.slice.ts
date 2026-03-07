@@ -6,9 +6,10 @@ interface IUserState {
   userId: string | null;
   username: string | null;
 }
+
 interface IUserActions {
   setAuth: (isAuth: boolean) => void;
-  setUserInfo: (userData: any) => void;
+  setUserInfo: (userData: { id: string; username: string }) => void;
 }
 export type IUserSlice = IUserState & IUserActions;
 

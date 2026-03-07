@@ -1,6 +1,7 @@
 "use client";
 
-import { createContext, useContext, useState, ReactNode } from "react";
+import { createContext, ReactNode, useState } from "react";
+
 interface ModalContextType {
   isOpen: boolean;
   modalNode: React.ReactNode | null;
@@ -17,7 +18,7 @@ export const ModalContext = createContext<ModalContextType>(
   {} as ModalContextType,
 );
 
-export const ModalProvider = ({ children }: any) => {
+export const ModalProvider = ({ children }: { children: ReactNode }) => {
   const [modalNode, setModalNode] = useState<React.ReactNode | null>(null);
   const [isOpen, setIsOpen] = useState(false);
   const [nodeId, setNodeId] = useState<string | null>(null);

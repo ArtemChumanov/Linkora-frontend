@@ -1,16 +1,21 @@
 import Link from "next/link";
 import {
   Breadcrumb,
-  BreadcrumbEllipsis,
   BreadcrumbItem,
   BreadcrumbLink,
   BreadcrumbList,
-  BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import React, { ReactNode } from "react";
+import { FC, ReactNode } from "react";
 
-export function BreadcrumbsBlock({ linkChain }) {
+interface Props {
+  linkChain: {
+    name: string;
+    link: string | null;
+  }[];
+}
+
+const BreadcrumbsBlock: FC<Props> = ({ linkChain }) => {
   return (
     <Breadcrumb>
       <BreadcrumbList>
@@ -32,4 +37,6 @@ export function BreadcrumbsBlock({ linkChain }) {
       </BreadcrumbList>
     </Breadcrumb>
   );
-}
+};
+
+export default BreadcrumbsBlock;
