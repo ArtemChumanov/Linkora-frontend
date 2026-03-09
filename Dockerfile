@@ -1,24 +1,19 @@
-# Dockerfile у Linkora-frontend
-FROM node:20-alpine
-
-# Встановлюємо pnpm глобально
-RUN npm install -g pnpm
+# Dockerfile для фронтенду
+FROM node:20-alpine AS builder
 
 WORKDIR /app
 
-# Копіюємо lockfile і package.json
 COPY package.json pnpm-lock.yaml ./
-
-# Встановлюємо залежності
 RUN pnpm install
 
-# Копіюємо весь проект
 COPY . .
-
-# Будуємо Next.js
 RUN pnpm build
 
-EXPOSE 3000
+FROM node:20-alpine
+WORKDIR /app
+COPY --from=builder /app/.next ./.next
+COPY --from=builder /app/package.json ./
+COPY --from=builder /app/public ./public
 
-# Старт Next.js серверу
+EXPOSE 3000
 CMD ["pnpm", "start"]
