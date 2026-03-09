@@ -26,7 +26,7 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SERVER_SSH_KEY }}
           script: |
-            cd /root/linkora/Linkora-backend
+            cd /root/linkora/Linkora-frontend
             git fetch --all
             git reset --hard origin/main
             docker-compose up -d --build
