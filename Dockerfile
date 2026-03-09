@@ -21,19 +21,6 @@ COPY . .
 # Build Next.js
 RUN pnpm build
 
-# --------------------------
-# Stage 2: production runner
-# --------------------------
-FROM node:20-alpine AS runner
-
-WORKDIR /app
-
-# Копіюємо потрібні файли з builder stage
-COPY --from=builder /app/.next ./.next
-COPY --from=builder /app/public ./public
-COPY --from=builder /app/package.json ./package.json
-COPY --from=builder /app/node_modules ./node_modules
-
 # Виставляємо порт
 EXPOSE 3000
 
