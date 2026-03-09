@@ -1,35 +1,41 @@
-# Build stage
+# --------------------------
+# Stage 1: dependencies + build
+# --------------------------
 FROM node:20-alpine AS builder
 
+# Робоча директорія
 WORKDIR /app
 
-# Встановлюємо pnpm
+# Встановлюємо pnpm глобально
 RUN npm install -g pnpm
 
-# Копіюємо тільки package.json і lockfile
+# Копіюємо тільки package.json та lockfile
 COPY package.json pnpm-lock.yaml ./
 
-# Встановлюємо залежності (кешується при зміні lockfile)
+# Встановлюємо залежності (це шар можна кешувати)
 RUN pnpm install
 
 # Копіюємо решту проекту
 COPY . .
 
-# Будуємо Next.js
+# Build Next.js
 RUN pnpm build
 
-# Production stage
+# --------------------------
+# Stage 2: production runner
+# --------------------------
 FROM node:20-alpine AS runner
 
 WORKDIR /app
 
-# Копіюємо лише потрібні файли з build stage
+# Копіюємо потрібні файли з builder stage
 COPY --from=builder /app/.next ./.next
-COPY --from=builder /app/package.json ./package.json
 COPY --from=builder /app/public ./public
+COPY --from=builder /app/package.json ./package.json
 COPY --from=builder /app/node_modules ./node_modules
 
+# Виставляємо порт
 EXPOSE 3000
 
-# Старт Next.js
+# Запуск Next.js у production
 CMD ["pnpm", "start"]
