@@ -17,7 +17,7 @@ const removeToken = () => {
 };
 
 // базова конфігурація для всіх запитів
-export const BASE_URL = "http://167.71.11.150/api";
+export const BASE_URL = "http://linkora.pp.ua/api";
 
 /* ================================
    MAIN API INSTANCE
