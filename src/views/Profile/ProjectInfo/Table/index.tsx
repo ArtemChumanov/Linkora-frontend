@@ -9,12 +9,14 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { BASE_URL } from "@/lib/axiosConfig";
+import { copy } from "@/lib/utils";
 import { IEvent } from "@/types/user";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { Database } from "lucide-react";
+import { Copy, Database } from "lucide-react";
 import { FC } from "react";
 
-const linkCreator = (code: string) => BASE_URL + "/link/info/" + code;
+const linkCreator = (code: string) =>
+  BASE_URL.replace("/api", "") + "/link/info/" + code;
 
 interface TableDemoProps {
   links: {
@@ -57,6 +59,12 @@ const TableDemo: FC<TableDemoProps> = ({ links, projectId }) => {
               <TableRow key={item.id}>
                 <TableCell className="font-medium">
                   {linkCreator(item.code)}
+                  <Button
+                    variant="ghost"
+                    onClick={() => copy(linkCreator(item.code))}
+                  >
+                    <Copy />
+                  </Button>
                 </TableCell>
                 <TableCell className="text-center">
                   {item.events.length}

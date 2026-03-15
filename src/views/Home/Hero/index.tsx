@@ -27,7 +27,7 @@ const Hero = () => {
       </div>
       <div className="w-full h-[400px] border">
         {" "}
-        <AuthPopup />{" "}
+        <AuthPopup param="login" />{" "}
       </div>
     </div>
   );

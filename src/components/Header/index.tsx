@@ -25,8 +25,10 @@ const Header = () => {
           <UserInfo />
         ) : (
           <div className="flex items-center gap-2">
-            <Button variant="secondary">Log In</Button>
-            <Button variant="secondary" onClick={openAuth}>
+            <Button variant="secondary" onClick={() => openAuth("login")}>
+              Log In
+            </Button>
+            <Button variant="secondary" onClick={() => openAuth("register")}>
               Sign In
             </Button>
           </div>

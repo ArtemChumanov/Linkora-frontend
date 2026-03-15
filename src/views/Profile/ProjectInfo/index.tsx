@@ -1,5 +1,4 @@
 "use client";
-import SearchInput from "@/components/common/SearchInput";
 import { Button } from "@/components/ui/button";
 import { useMemo } from "react";
 import TableDemo from "./Table";
@@ -39,7 +38,6 @@ const ProjectInfo = () => {
 
   const totalClicks = useMemo(() => calcTolatEvents(links), [links]);
 
-  console.log(links);
   const [present] = useModal(
     <CreateLinkPopup projectId={projectId as string} />,
   );
@@ -69,13 +67,10 @@ const ProjectInfo = () => {
       </div>
       <h2 className="text-2xl font-bold  mt-8">My links</h2>
 
-      <div className="flex w-full  mt-8 gap-30">
+      <div className="flex w-full">
         <div className="w-full">
-          <SearchInput />
-
           <TableDemo links={links} projectId={projectId as string} />
         </div>
-        {/* <div className="w-1/2 border">link</div> */}
       </div>
     </div>
   );

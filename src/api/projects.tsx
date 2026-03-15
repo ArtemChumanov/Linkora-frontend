@@ -3,7 +3,6 @@ import { IProjectList, ProjectsSchema } from "@/schemas/project.schema";
 
 export const getProjects = async (): Promise<IProjectList> => {
   const res = await API.get("/project");
-  console.log("wwwww", res);
   const parsed = ProjectsSchema.safeParse(res.data);
 
   if (!parsed.success) {
